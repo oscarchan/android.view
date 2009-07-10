@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+		<item
+		  android:id="@+id/mm_add_id"
+			android:title="@string/mm_add_item" 
+			android:titleCondensed="@string/mm_add_item">
+		</item>
+  	<item 
+		  android:id="@+id/mm_remove_id"
+		  android:title="@string/mm_remove_item"
+		  android:titleCondensed="@string/mm_remove_item" >
+		</item>
+</menu>

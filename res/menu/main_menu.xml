@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:id="@+id/main_group">
+		<item android:menuCategory="container" 
+		  android:id="@+id/container_item"
+			android:title="@string/mm_item1" 
+			android:titleCondensed="@string/mm_item1">
+			<menu></menu>
+			<menu></menu>
+		</item>
+		<item android:menuCategory="system" 
+		  android:id="@+id/sys_item"
+		  android:title="@string/mm_item2"
+		  android:titleCondensed="@string/mm_item2"
+		  >
+			<menu></menu>
+		</item>
+		<item android:menuCategory="secondary" 
+		  android:id="@+id/_2ndary_item"
+		  android:title="@string/mm_item3">
+			<menu></menu>
+		</item>
+		<item android:menuCategory="alternative" 
+		  android:id="@+id/alt_item"
+		  android:title="@string/mm_item4">
+			<menu></menu>
+		</item>
+	</group>
+</menu>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="mm_container_item_txt"></string>
+	<string name="main_message">I love my bb!!</string>
+	<string name="app_name">Andriod View Study</string>
+
+  <string name="mm_add_item">add an item</string>
+  <string name="mm_remove_item">remove an item</string>
+
+	<string name="mm_item1">m_item1</string>
+	<string name="mm_item2">m_item2</string>
+  <string name="mm_item3">m_item3</string>
+  <string name="mm_item4">m_item4</string>
+  
+  <string name="mm_item_added">menu item %d is added</string>
+  <string name="mm_item_removed">menu item %d is removed</string>
+  
+  <string name="mm_item_max">max no. of item has reached</string>
+  <string name="mm_item_min">min no. of item has reached</string>
+<string name="view_name">view_name</string>
+
+
+<string name="elm_record_loc_title">Record My Current Location</string>
+<string name="elm_clean_all_loc_title">Clean All Locations</string>
+<string name="elm_tracking_loc_title">Track My location movement</string>
+
+<string name="elm_show_loc">%1$tF %1$tT (%2$f %3$f)</string>
+</resources>
