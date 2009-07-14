@@ -25,4 +25,7 @@
 <string name="elm_tracking_loc_title">Track My location movement</string>
 
 <string name="elm_show_loc">%1$tF %1$tT (%2$f %3$f)</string>
+<string name="pm_add_proximity_title">add proximity</string>
+<string name="pm_search_nearby_title">Search nearby</string>
+<string name="pm_clean_all_proximities_title">Clear all proximities</string>
 </resources>
