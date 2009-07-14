@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/search_nearby" android:title="@string/pm_search_nearby_title"></item>
+  <item android:id="@+id/add_proximity" android:title="@string/pm_add_proximity_title"></item>
+  <item android:id="@+id/cleare_all_proximities" android:title="@string/pm_clean_all_proximities_title"></item>
+</menu>
