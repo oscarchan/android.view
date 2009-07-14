@@ -60,7 +60,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 		//
 		// mLocationAdapter = new ArrayAdapter<String>(this,
 		// android.R.layout.simple_list_item_1, locationList);
-		// listView.setAdapter(mLocationAdapter);
+		// listView.setAdapter(mLocationAdapter); 
 		//
 		// setContentView(R.layout.event_log);
 	}

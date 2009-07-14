@@ -2,7 +2,7 @@
 <resources>
 	<string name="mm_container_item_txt"></string>
 	<string name="main_message">I love my bb!!</string>
-	<string name="app_name">Andriod View Study</string>
+	<string name="app_name">Android View Study</string>
 
   <string name="mm_add_item">add an item</string>
   <string name="mm_remove_item">remove an item</string>
