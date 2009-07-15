@@ -202,7 +202,7 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 	{
 		super.onCreateContextMenu(menu, v, menuInfo);
 
-		menu.add(0, LOCATE_MAP, 0, "Locate");
+		menu.add(0, LOCATE_MAP, 0, "Locate in Map");
 		menu.add(0, SHOW_ADDRESS, 0, "Show Address");
 		menu.add(0, DELETE_LOC, 0, "Delete");
 	}

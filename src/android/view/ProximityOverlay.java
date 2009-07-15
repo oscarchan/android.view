@@ -26,9 +26,7 @@ public class ProximityOverlay extends Overlay
     {
         Projection projection = mapView.getProjection();
         
-        Point point = new Point();
-        
-        projection.toPixels(mGeoPoint, point);
+        Point point = projection.toPixels(mGeoPoint, null);
         
         Bitmap pointIcon = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.point_b);
         

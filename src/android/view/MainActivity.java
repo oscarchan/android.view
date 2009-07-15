@@ -33,7 +33,7 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View arg0)
 			{
-				Intent intent = new Intent(MainActivity.this, EventLogViewActivity.class);
+				Intent intent = new Intent(MainActivity.this, ViewLocationActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -45,7 +45,7 @@ public class MainActivity extends Activity
         {
             public void onClick(View v)
             {
-                Intent intent = new Intent(MainActivity.this, ProximityEventActivity.class);
+                Intent intent = new Intent(MainActivity.this, ViewProximityActivity.class);
                 startActivity(intent);
             }
         });
