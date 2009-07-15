@@ -44,16 +44,8 @@ public class ViewMapActivity extends MapActivity
         MapController mapController = mapView.getController();
         mapController.setZoom(17);
         
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(false);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        String provider = locationManager.getBestProvider(criteria, true);
-        
-        Location currentLocation = locationManager.getLastKnownLocation(provider);
+        // location
+        Location currentLocation = getCurrentLocation();
         GeoPoint currentGeoPoint = getGeoPointLocation(currentLocation);
         mapController.animateTo(currentGeoPoint);
         
@@ -61,7 +53,7 @@ public class ViewMapActivity extends MapActivity
         ZoomControls zoomControls = (ZoomControls) mapView.getZoomControls();
         
         
-        linearLayout.addView(zoomControls);
+        // linearLayout.addView(zoomControls);
         
         mOverlays = mapView.getOverlays();
         mDrawable = this.getResources().getDrawable(R.drawable.screen18x18);
@@ -85,6 +77,21 @@ public class ViewMapActivity extends MapActivity
             
         }
         
+    }
+
+    private Location getCurrentLocation()
+    {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(false);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String provider = locationManager.getBestProvider(criteria, true);
+        
+        Location currentLocation = locationManager.getLastKnownLocation(provider);
+        return currentLocation;
     }
     
     private GeoPoint getGeoPointLocation(Location location)
