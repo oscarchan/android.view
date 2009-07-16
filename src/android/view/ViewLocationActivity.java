@@ -368,9 +368,14 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 
 		List<LocationView> recentLocationList = mLocationList.subList(Math.min(0, mLocationList.size() - 3), mLocationList.size());
 		
+		boolean matched = false;
 		for (LocationView locationView : recentLocationList) {
+            GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
             
-		    
+            if(locationView.match(geoPoint)) {
+                matched = true;
+                break;
+            }
         }
 		
 		mLocationList.add(new LocationView(location));
