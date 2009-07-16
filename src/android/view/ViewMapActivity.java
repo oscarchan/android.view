@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -60,7 +59,6 @@ public class ViewMapActivity extends MapActivity
         mDrawable = this.getResources().getDrawable(R.drawable.point_b);
         
         mItemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
-//        mOverlays.add(mItemizedOverlay);
         mMapController = mapController;
         
         // 
@@ -76,7 +74,7 @@ public class ViewMapActivity extends MapActivity
                 
                 OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
                 mItemizedOverlay.addOverlay(overlayItem);
-                mOverlays.add(mItemizedOverlay);
+//                mOverlays.add(mItemizedOverlay);
             }
         }
     }

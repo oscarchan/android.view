@@ -1,4 +1,8 @@
-#Fri Jul 10 14:58:16 PDT 2009
+#Wed Jul 15 15:52:12 PDT 2009
 eclipse.preferences.version=1
 formatter_profile=_oscar
 formatter_settings_version=11
+org.eclipse.jdt.ui.exception.name=e
+org.eclipse.jdt.ui.gettersetter.use.is=true
+org.eclipse.jdt.ui.keywordthis=false
+org.eclipse.jdt.ui.overrideannotation=true

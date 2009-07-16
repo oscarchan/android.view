@@ -24,18 +24,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-import com.google.android.maps.GeoPoint;
-
 public class ViewLocationActivity extends ListActivity implements LocationListener
 {
-	private final static int MIN_DISTANCE = 25;
+	private static final int MAX_LOCATION_REVIEWS = 3;
+
+    private final static int MIN_DISTANCE = 25;
 	
 	private final static int SHOW_ADDRESS = 0;
 	private final static int LOCATE_MAP = 1;
 	private final static int DELETE_LOC = 2;
 
-	private List<LocationView> mLocationList;
-	private ArrayAdapter<LocationView> mAdapter;
+	private List<ProximityPoint> mLocationList;
+	private ArrayAdapter<ProximityPoint> mAdapter;
+	
+	private Map<GeoPoint>
 	private Geocoder mGeocoder;
 
 	private int mListSelectedItemPosition = -1;
@@ -45,9 +47,9 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 	{
 		super.onCreate(savedInstanceState);
 
-		List<LocationView> locationList = new ArrayList<LocationView>();
+		List<ProximityPoint> locationList = new ArrayList<ProximityPoint>();
 
-		ArrayAdapter<LocationView> adapter = new ArrayAdapter<LocationView>(this, android.R.layout.simple_list_item_1, locationList);
+		ArrayAdapter<ProximityPoint> adapter = new ArrayAdapter<ProximityPoint>(this, android.R.layout.simple_list_item_1, locationList);
 
 		setListAdapter(adapter);
 
@@ -131,7 +133,7 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 			{
 				int position = mListSelectedItemPosition;
 
-				LocationView location = null;
+				ProximityPoint location = null;
 				if (0 <= position && position < mLocationList.size()) {
 					location = mLocationList.get(position);
 				}
@@ -141,7 +143,7 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 
 				if (location != null) {
 					locationInfo = "position " + position + ": " + location;
-					locationAddress = getGeoAddress(location.getGeoPoint());
+					locationAddress = getGeoAddress(location.getLocation());
 
 				}
 
@@ -163,12 +165,12 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 		}
 	}
 
-	private String getGeoAddress(GeoPoint location)
+	private String getGeoAddress(ProximityPoint location)
 	{
 		String reverseAddress = "address not found";
 
 		try {
-			List<Address> addresses = mGeocoder.getFromLocation(location.getLatitudeE6() / 1.0E6, location.getLongitudeE6() / 1.0E6, 1);
+			List<Address> addresses = mGeocoder.getFromLocation(location.getLatitudeE6(), location.getLongitudeE6(), 1);
 
 			if (addresses.isEmpty() == false) {
 				Address address = addresses.get(0);
@@ -227,10 +229,10 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 			{
               Intent intent = new Intent(ViewLocationActivity.this, ViewMapActivity.class);
               
-              ArrayList<Location> locationList = new ArrayList<Location>();
-              for (LocationView location : mLocationList)
+              ArrayList<ProximityPoint> locationList = new ArrayList<ProximityPoint>();
+              for (ProximityPoint location : mLocationList)
               {
-                locationList.add(location.mLocation);
+                locationList.add(location);
               }
 
               // very interesting that it picked a specific List implementation
@@ -268,7 +270,7 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 
 				Location location = locationMgr.getLastKnownLocation(providerName);
 
-				mLocationList.add(new LocationView(location));
+				mLocationList.add(new ProximityPoint(location));
 
 				mAdapter.notifyDataSetChanged();
 			}
@@ -296,14 +298,10 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 
 	static class LocationView
 	{
-		private static final String template = "%1$tF %1$tT (%2$f, %3$f): %4$f %4$d";
+		private static final String template = "%1$tF %1$tT (%2$f %3$f)";
 
-		private Location mLocation;
-		
-		private GeoPoint mGeoPoint;
-		private List<Long> mRecordTimes = new ArrayList<Long>(); 
-		private boolean mAccuracyChanged;
-		private int mAccuracy;
+		private ProximityPoint mLocation;
+		private int mCount;
 
 		public LocationView(Location location)
 		{
@@ -311,45 +309,24 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 				throw new IllegalArgumentException("missing location");
 
 			mLocation = location;
-			
-			mGeoPoint = LocationUtils.getGeoPoint(location);
-			
-			mRecordTimes.add(location.getTime());
-			mAccuracy = (int) location.getAccuracy();
+		}
+		
+		public boolean matchLocation(Location location)
+		{
+		    boolean match = (mLocation.getLatitude() - location.getLatitude()) < 1E6;
+		    if(match)
+		        match = (mLocation.getLongitude() - location.getLongitude()) < 
 		}
 
-		public void addLocation(Location location)
+		public Location getLocation()
 		{
-		    if (location == null)
-		        throw new IllegalArgumentException("missing location");
+			return mLocation;
+		}
 
-		    GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
-		    
-		    if(geoPoint.equals(mGeoPoint)==false)
-		        throw new IllegalArgumentException("unmatched geo point: existing=" + mGeoPoint + ": new=" + geoPoint);
-		    
-		    mRecordTimes.add(location.getTime());
-		    
-		    if(mAccuracyChanged==false) {
-		        int accuracy = (int) location.getAccuracy();
-		        mAccuracyChanged = accuracy != mAccuracy;
-		    }
-		}
-		
-		public boolean match(GeoPoint geoPoint)
-		{
-		    return mGeoPoint.equals(geoPoint);
-		}
-		
-		public GeoPoint getGeoPoint()
-		{
-		    return mGeoPoint;
-		}
-		
 		@Override
 		public String toString()
 		{
-			return String.format(template, mLocation.getTime(), mLocation.getLatitude(), mLocation.getLongitude(), mLocation.getAccuracy(), mRecordTimes.size());
+			return String.format(template, mLocation.getTime(), mLocation.getLatitude(), mLocation.getLongitude());
 		}
 
 	}
@@ -366,13 +343,12 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 			locationMgr.requestLocationUpdates(providerName, 0, MIN_DISTANCE, this);
 		}
 
-		List<LocationView> recentLocationList = mLocationList.subList(Math.min(0, mLocationList.size() - 3), mLocationList.size());
+		List<LocationView> recentLocationList = mLocationList.subList(Math.min(0, mLocationList.size() - MAX_LOCATION_REVIEWS), mLocationList.size());
 		
-		for (LocationView locationView : recentLocationList) {
+		boolean found = 
+		for (LocationView recentLocation : recentLocationList) {
             
-		    
         }
-		
 		mLocationList.add(new LocationView(location));
 		mAdapter.notifyDataSetChanged();
 	}

@@ -20,7 +20,7 @@ public class LocationUtils
     public static String getLowPowerProvider(LocationManager locationManager)
     {
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+//        criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
         criteria.setCostAllowed(false);
