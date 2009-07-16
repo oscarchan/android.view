@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.location.Address;
 import android.location.Criteria;
@@ -23,15 +24,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class EventLogViewActivity extends ListActivity implements LocationListener
+public class ViewLocationActivity extends ListActivity implements LocationListener
 {
-	private static final int MIN_DISTANCE = 25;
+	private static final int MAX_LOCATION_REVIEWS = 3;
+
+    private final static int MIN_DISTANCE = 25;
+	
 	private final static int SHOW_ADDRESS = 0;
 	private final static int LOCATE_MAP = 1;
 	private final static int DELETE_LOC = 2;
 
-	private List<LocationView> mLocationList;
-	private ArrayAdapter<LocationView> mAdapter;
+	private List<ProximityPoint> mLocationList;
+	private ArrayAdapter<ProximityPoint> mAdapter;
+	
+	private Map<GeoPoint>
 	private Geocoder mGeocoder;
 
 	private int mListSelectedItemPosition = -1;
@@ -41,9 +47,9 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 	{
 		super.onCreate(savedInstanceState);
 
-		List<LocationView> locationList = new ArrayList<LocationView>();
+		List<ProximityPoint> locationList = new ArrayList<ProximityPoint>();
 
-		ArrayAdapter<LocationView> adapter = new ArrayAdapter<LocationView>(this, android.R.layout.simple_list_item_1, locationList);
+		ArrayAdapter<ProximityPoint> adapter = new ArrayAdapter<ProximityPoint>(this, android.R.layout.simple_list_item_1, locationList);
 
 		setListAdapter(adapter);
 
@@ -60,7 +66,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 		//
 		// mLocationAdapter = new ArrayAdapter<String>(this,
 		// android.R.layout.simple_list_item_1, locationList);
-		// listView.setAdapter(mLocationAdapter);
+		// listView.setAdapter(mLocationAdapter); 
 		//
 		// setContentView(R.layout.event_log);
 	}
@@ -98,9 +104,9 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 					{
 						if (position < mLocationList.size()) {
 							mLocationList.remove(position);
-							Toast.makeText(EventLogViewActivity.this, "Deleted location position " + position, Toast.LENGTH_SHORT);
+							Toast.makeText(ViewLocationActivity.this, "Deleted location position " + position, Toast.LENGTH_SHORT);
 						} else {
-							Toast.makeText(EventLogViewActivity.this, "Unable to delete location position " + position, Toast.LENGTH_SHORT);
+							Toast.makeText(ViewLocationActivity.this, "Unable to delete location position " + position, Toast.LENGTH_SHORT);
 						}
 					}
 				}).setNegativeButton("Cancel", new OnClickListener()
@@ -127,7 +133,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 			{
 				int position = mListSelectedItemPosition;
 
-				LocationView location = null;
+				ProximityPoint location = null;
 				if (0 <= position && position < mLocationList.size()) {
 					location = mLocationList.get(position);
 				}
@@ -159,12 +165,12 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 		}
 	}
 
-	private String getGeoAddress(Location location)
+	private String getGeoAddress(ProximityPoint location)
 	{
 		String reverseAddress = "address not found";
 
 		try {
-			List<Address> addresses = mGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+			List<Address> addresses = mGeocoder.getFromLocation(location.getLatitudeE6(), location.getLongitudeE6(), 1);
 
 			if (addresses.isEmpty() == false) {
 				Address address = addresses.get(0);
@@ -181,7 +187,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 
 		} catch (IOException e) {
 			// ignore
-			Toast.makeText(EventLogViewActivity.this, "Unable to get address: " + e, Toast.LENGTH_SHORT);
+			Toast.makeText(ViewLocationActivity.this, "Unable to get address: " + e, Toast.LENGTH_SHORT);
 		}
 
 		return reverseAddress;
@@ -200,7 +206,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 	{
 		super.onCreateContextMenu(menu, v, menuInfo);
 
-		menu.add(0, LOCATE_MAP, 0, "Locate");
+		menu.add(0, LOCATE_MAP, 0, "Locate in Map");
 		menu.add(0, SHOW_ADDRESS, 0, "Show Address");
 		menu.add(0, DELETE_LOC, 0, "Delete");
 	}
@@ -221,7 +227,18 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 			}
 			case LOCATE_MAP:
 			{
-				// TODO
+              Intent intent = new Intent(ViewLocationActivity.this, ViewMapActivity.class);
+              
+              ArrayList<ProximityPoint> locationList = new ArrayList<ProximityPoint>();
+              for (ProximityPoint location : mLocationList)
+              {
+                locationList.add(location);
+              }
+
+              // very interesting that it picked a specific List implementation
+              intent.putParcelableArrayListExtra(ViewActivityConstants.INTENT_LOCATIONS, locationList);
+              startActivity(intent);
+              
 				break;
 			}
 			case DELETE_LOC:
@@ -253,7 +270,7 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 
 				Location location = locationMgr.getLastKnownLocation(providerName);
 
-				mLocationList.add(new LocationView(location));
+				mLocationList.add(new ProximityPoint(location));
 
 				mAdapter.notifyDataSetChanged();
 			}
@@ -283,7 +300,8 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 	{
 		private static final String template = "%1$tF %1$tT (%2$f %3$f)";
 
-		private Location mLocation;
+		private ProximityPoint mLocation;
+		private int mCount;
 
 		public LocationView(Location location)
 		{
@@ -291,6 +309,13 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 				throw new IllegalArgumentException("missing location");
 
 			mLocation = location;
+		}
+		
+		public boolean matchLocation(Location location)
+		{
+		    boolean match = (mLocation.getLatitude() - location.getLatitude()) < 1E6;
+		    if(match)
+		        match = (mLocation.getLongitude() - location.getLongitude()) < 
 		}
 
 		public Location getLocation()
@@ -310,17 +335,20 @@ public class EventLogViewActivity extends ListActivity implements LocationListen
 	{
 		LocationManager locationMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-		Criteria criteria = new Criteria();
-		criteria.setPowerRequirement(Criteria.POWER_LOW);
-		criteria.setCostAllowed(false);
-
-		String providerName = locationMgr.getBestProvider(criteria, true);
+		String providerName = LocationUtils.getLowPowerProvider(locationMgr);
+		
 		Toast.makeText(this, "recording with provider: " + providerName, Toast.LENGTH_SHORT).show();
 
 		if (providerName != null) {
 			locationMgr.requestLocationUpdates(providerName, 0, MIN_DISTANCE, this);
 		}
 
+		List<LocationView> recentLocationList = mLocationList.subList(Math.min(0, mLocationList.size() - MAX_LOCATION_REVIEWS), mLocationList.size());
+		
+		boolean found = 
+		for (LocationView recentLocation : recentLocationList) {
+            
+        }
 		mLocationList.add(new LocationView(location));
 		mAdapter.notifyDataSetChanged();
 	}

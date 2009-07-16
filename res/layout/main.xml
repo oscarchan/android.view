@@ -5,9 +5,12 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical">
+  <TextView android:text="Sample tests" android:id="@+id/main_title"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 	<Button android:text="sample views" android:id="@+id/sample_views"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	<Button android:text="sample locations" android:id="@+id/sample_locations"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<TextView android:text="TextView01" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+  <Button android:text="sample proximity" android:id="@+id/sample_proximity"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>

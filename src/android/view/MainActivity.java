@@ -23,7 +23,6 @@ public class MainActivity extends Activity
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(MainActivity.this, ViewSelectorActivity.class);
-				
 				startActivity(intent);
 			}
 		});
@@ -34,11 +33,22 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View arg0)
 			{
-				Intent intent = new Intent(MainActivity.this, EventLogViewActivity.class);
-				
+				Intent intent = new Intent(MainActivity.this, ViewLocationActivity.class);
 				startActivity(intent);
 			}
 		});
+  	
+  	Button proximityButton = (Button) this.findViewById(R.id.sample_proximity);
+  	
+  	proximityButton.setOnClickListener(
+  	    new OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(MainActivity.this, ViewProximityActivity.class);
+                startActivity(intent);
+            }
+        });
   	
 //  	startService(service)
 	}

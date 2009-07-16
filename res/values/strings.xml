@@ -2,7 +2,7 @@
 <resources>
 	<string name="mm_container_item_txt"></string>
 	<string name="main_message">I love my bb!!</string>
-	<string name="app_name">Andriod View Study</string>
+	<string name="app_name">Android View Study</string>
 
   <string name="mm_add_item">add an item</string>
   <string name="mm_remove_item">remove an item</string>
@@ -25,4 +25,7 @@
 <string name="elm_tracking_loc_title">Track My location movement</string>
 
 <string name="elm_show_loc">%1$tF %1$tT (%2$f %3$f)</string>
+<string name="pm_add_proximity_title">add proximity</string>
+<string name="pm_search_nearby_title">Search nearby</string>
+<string name="pm_clean_all_proximities_title">Clear all proximities</string>
 </resources>
