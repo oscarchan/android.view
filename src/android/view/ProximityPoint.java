@@ -1,6 +1,5 @@
 package android.view;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,14 +8,15 @@ import com.google.android.maps.GeoPoint;
 public class ProximityPoint implements Parcelable
 {
     private GeoPoint mPoint;
-    private int mAccuracy;
+    private float mAccuracy;
 
-    public ProximityPoint(GeoPoint point)
+    public ProximityPoint(GeoPoint point, float accuracy)
     {
         if(point==null)
             throw new IllegalArgumentException("missing GeoPoint");
         
         mPoint = point;
+        mAccuracy = accuracy;
     }
 
     public GeoPoint getGeoPoint()
@@ -34,11 +34,16 @@ public class ProximityPoint implements Parcelable
         return mPoint.getLongitudeE6();
     }
     
-    public int getAccuracy()
+    public float getAccuracy()
     {
         return mAccuracy;
     }
  
+    public String toString()
+    {
+        return "PrxPt(" + mPoint.getLatitudeE6() + ", " + mPoint.getLongitudeE6() + ": " + mAccuracy + ")";
+    }
+    
     public int describeContents()
     {
         return 0;
@@ -48,7 +53,7 @@ public class ProximityPoint implements Parcelable
     {
         parcel.writeInt(mPoint.getLatitudeE6());
         parcel.writeInt(mPoint.getLongitudeE6());
-        parcel.writeInt(mAccuracy);
+        parcel.writeFloat(mAccuracy);
         
     }
     
@@ -57,9 +62,9 @@ public class ProximityPoint implements Parcelable
         public ProximityPoint createFromParcel(Parcel in) {
             int latE6 = in.readInt();
             int lngE6 = in.readInt();
-            int accuracy = in.readInt();
+            float accuracy = in.readFloat();
             
-            return new ProximityPoint(new GeoPoint(latE6, lngE6));
+            return new ProximityPoint(new GeoPoint(latE6, lngE6), accuracy);
         }
 
         public ProximityPoint[] newArray(int size) {

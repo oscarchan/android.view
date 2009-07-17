@@ -79,11 +79,13 @@ public class ViewMapActivity extends MapActivity
                 for (Location location : locations) {
                     GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
 
-                    OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-                    ViewMapItemizedOverlay itemizedOverlay = new ViewMapItemizedOverlay(mDrawable);
+                    ProximityPoint proximityPoint = new ProximityPoint(geoPoint, location.getAccuracy());
+                    
+//                    OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
+                    ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
 
-                    itemizedOverlay.addOverlay(overlayItem);
-                    mOverlays.add(itemizedOverlay);
+//                    itemizedOverlay.addOverlay(overlayItem);
+                    mOverlays.add(overlay);
                 }
             }
         }
