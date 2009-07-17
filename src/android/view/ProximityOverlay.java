@@ -30,8 +30,8 @@ public class ProximityOverlay extends Overlay
         float radius = projection.metersToEquatorPixels(mProximityPoint.getAccuracy());
         Paint paint = new Paint();
         
-        paint.setStyle(Style.STROKE);
-        paint.setARGB(128, 255, 0, 0);
+        paint.setStyle(Style.FILL);
+        paint.setARGB(16, 128, 0, 0);
         canvas.drawCircle(point.x, point.y, radius, paint);
         
 //        Bitmap pointIcon = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.point_b);
