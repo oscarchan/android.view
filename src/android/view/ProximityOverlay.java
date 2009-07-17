@@ -1,24 +1,24 @@
 package android.view;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Paint.Style;
+import android.graphics.drawable.Drawable;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
 public class ProximityOverlay extends Overlay
 {
-    private GeoPoint mGeoPoint;
-    private POICategory mCategory;
+    private ProximityPoint mProximityPoint;
+    private Drawable mMarker;
     
-    public ProximityOverlay(GeoPoint geoPoint, POICategory category)
+    public ProximityOverlay(ProximityPoint point, Drawable marker)
     {
-        mGeoPoint = geoPoint;
-        mCategory = category;
+        mProximityPoint = point;
+        mMarker = marker;
     }
     
     @Override
@@ -26,13 +26,20 @@ public class ProximityOverlay extends Overlay
     {
         Projection projection = mapView.getProjection();
         
-        Point point = projection.toPixels(mGeoPoint, null);
+        Point point = projection.toPixels(mProximityPoint.getGeoPoint(), null);
+        float radius = projection.metersToEquatorPixels(mProximityPoint.getAccuracy());
+        Paint paint = new Paint();
         
-        Bitmap pointIcon = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.point_b);
+        paint.setStyle(Style.STROKE);
+        paint.setARGB(128, 255, 0, 0);
+        canvas.drawCircle(point.x, point.y, radius, paint);
         
-        pointIcon.getHeight();
-        pointIcon.getWidth();
+//        Bitmap pointIcon = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.point_b);
         
+//        pointIcon.getHeight();
+//        pointIcon.getWidth();
+        
+//        canvas.
 //        canvas.drawBitmap(pointIcon, matrix, paint)
         
     }

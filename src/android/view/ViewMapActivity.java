@@ -63,7 +63,6 @@ public class ViewMapActivity extends MapActivity
         mOverlays = mapView.getOverlays();
         mDrawable = this.getResources().getDrawable(R.drawable.point_b);
         
-        ViewMapItemizedOverylay itemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
         mMapController = mapController;
         
         // 
@@ -81,6 +80,8 @@ public class ViewMapActivity extends MapActivity
                     GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
 
                     OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
+                    ViewMapItemizedOverylay itemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
+
                     itemizedOverlay.addOverlay(overlayItem);
                     mOverlays.add(itemizedOverlay);
                 }

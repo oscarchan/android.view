@@ -19,6 +19,11 @@ public class ProximityPoint implements Parcelable
         mPoint = point;
     }
 
+    public GeoPoint getGeoPoint()
+    {
+        return mPoint;
+    }
+    
     public int getLatitudeE6()
     {
         return mPoint.getLatitudeE6();
