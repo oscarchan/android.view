@@ -15,4 +15,5 @@
     android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
   <Button android:text="sample proximity" android:id="@+id/sample_proximity"
     android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<ImageButton android:id="@+id/ImageButton01" android:layout_width="wrap_content" android:layout_height="wrap_content"></ImageButton>
 </LinearLayout>
