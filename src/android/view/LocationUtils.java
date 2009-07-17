@@ -29,4 +29,13 @@ public class LocationUtils
      
         return provider;
     }
+    
+    public static double getDistance(GeoPoint p1, GeoPoint p2)
+    {
+        float[] results = new float[2];
+        
+        Location.distanceBetween(p1.getLatitudeE6() / 1.0E6, p1.getLongitudeE6() / 1.0E6, p2.getLatitudeE6() / 1.0E6, p2.getLongitudeE6() / 1.0E6, results);
+        
+        return results[0];
+    }
 }

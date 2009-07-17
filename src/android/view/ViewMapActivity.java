@@ -10,12 +10,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ZoomControls;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -23,7 +25,6 @@ public class ViewMapActivity extends MapActivity
 {
     private List<Overlay> mOverlays;
     private Drawable mDrawable;
-    private ViewMapItemizedOverylay mItemizedOverlay;
     private MapController mMapController;
     
     @Override
@@ -44,11 +45,15 @@ public class ViewMapActivity extends MapActivity
         MapController mapController = mapView.getController();
         mapController.setZoom(17);
         
-        // location
+        // my current location
         Location currentLocation = getCurrentLocation();
         GeoPoint currentGeoPoint = LocationUtils.getGeoPoint(currentLocation);
         mapController.animateTo(currentGeoPoint);
         
+        List<Overlay> overlays = mapView.getOverlays();
+        MyLocationOverlay currentLocationOverlay = new MyLocationOverlay(this, mapView);
+        overlays.add(currentLocationOverlay);
+        currentLocationOverlay.enableMyLocation();
         
         ZoomControls zoomControls = (ZoomControls) mapView.getZoomControls();
         
@@ -58,7 +63,7 @@ public class ViewMapActivity extends MapActivity
         mOverlays = mapView.getOverlays();
         mDrawable = this.getResources().getDrawable(R.drawable.point_b);
         
-        mItemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
+        ViewMapItemizedOverylay itemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
         mMapController = mapController;
         
         // 
@@ -68,13 +73,17 @@ public class ViewMapActivity extends MapActivity
         {
             ArrayList<Location> locations = intent.getParcelableArrayListExtra(ViewActivityConstants.INTENT_LOCATIONS);
     
-            int index = 0;
-            for (Location location : locations) {
-                GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
-                
-                OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-                mItemizedOverlay.addOverlay(overlayItem);
-//                mOverlays.add(mItemizedOverlay);
+            if (locations != null) {
+
+                Toast.makeText(this, "ViewMapActivity: received " + locations.size() +" locations", Toast.LENGTH_SHORT).show();
+                int index = 0;
+                for (Location location : locations) {
+                    GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
+
+                    OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
+                    itemizedOverlay.addOverlay(overlayItem);
+                    mOverlays.add(itemizedOverlay);
+                }
             }
         }
     }
