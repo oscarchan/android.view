@@ -80,7 +80,7 @@ public class ViewMapActivity extends MapActivity
                     GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
 
                     OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-                    ViewMapItemizedOverylay itemizedOverlay = new ViewMapItemizedOverylay(mDrawable);
+                    ViewMapItemizedOverlay itemizedOverlay = new ViewMapItemizedOverlay(mDrawable);
 
                     itemizedOverlay.addOverlay(overlayItem);
                     mOverlays.add(itemizedOverlay);

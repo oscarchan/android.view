@@ -7,13 +7,13 @@ import android.graphics.drawable.Drawable;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class ViewMapItemizedOverylay extends ItemizedOverlay<OverlayItem>
+public class ViewMapItemizedOverlay extends ItemizedOverlay<OverlayItem>
 {
     private ArrayList<OverlayItem> mItems = new ArrayList<OverlayItem>();
 //    private GeoPoint mGeoPoint;
 //    private float mAccuracy;
     
-    public ViewMapItemizedOverylay(Drawable defaultMarker)
+    public ViewMapItemizedOverlay(Drawable defaultMarker)
     {
         super(boundCenter(defaultMarker));
         
