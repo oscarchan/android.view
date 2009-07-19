@@ -4,9 +4,7 @@ import java.util.Locale;
 
 public class ProximityLocation
 {
-    private int mLatitudeE6;
-    private int mLongitudeE6;
-    private int mAccuracy; // in kilometer
+    private ProximityPoint mProximityPoint;
     
     private String mAddress1;
     private String mAddress2;
@@ -18,26 +16,12 @@ public class ProximityLocation
     
     private Locale mLocale;
 
-    public int getLatitudeE6()
-    {
-        return mLatitudeE6;
-    }
 
-    public void setLatitudeE6(int latitudeE6)
+    public ProximityPoint getProximitPoint()
     {
-        mLatitudeE6 = latitudeE6;
+        return mProximityPoint;
     }
-
-    public int getLongitudeE6()
-    {
-        return mLongitudeE6;
-    }
-
-    public void setLongitudeE6(int longitudeE6)
-    {
-        mLongitudeE6 = longitudeE6;
-    }
-
+    
     public String getAddress1()
     {
         return mAddress1;

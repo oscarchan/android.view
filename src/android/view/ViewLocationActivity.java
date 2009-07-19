@@ -28,7 +28,9 @@ import com.google.android.maps.GeoPoint;
 
 public class ViewLocationActivity extends ListActivity implements LocationListener
 {
-	private final static int MIN_DISTANCE = 25;
+	private static final int MAX_RECENT_LOCATIONS_AGGREATION = 5;
+
+    private final static int MIN_DISTANCE = 25;
 	
 	private final static int SHOW_ADDRESS = 0;
 	private final static int LOCATE_MAP = 1;
@@ -256,22 +258,16 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 		if (item.getItemId() == R.id.record_loc) {
 			LocationManager locationMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-			Criteria criteria = new Criteria();
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
-			criteria.setCostAllowed(false);
-
-			String providerName = locationMgr.getBestProvider(criteria, true);
+			String providerName = LocationUtils.getLowPowerProvider(locationMgr);
+			
 			Toast.makeText(this, "recording with provider: " + providerName, Toast.LENGTH_SHORT).show();
 
-			if (providerName != null) {
-				locationMgr.requestLocationUpdates(providerName, 1000, 0, this);
+			locationMgr.requestLocationUpdates(providerName, 1000, 0, this);
 
-				Location location = locationMgr.getLastKnownLocation(providerName);
+			Location location = locationMgr.getLastKnownLocation(providerName);
 
-				mLocationList.add(new LocationView(location));
-
-				mAdapter.notifyDataSetChanged();
-			}
+			updateLocation(location);
+			
 		} else if (item.getItemId() == R.id.track_loc) {
 			LocationManager locationMgr = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -296,7 +292,7 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 
 	static class LocationView
 	{
-		private static final String template = "%1$tF %1$tT (%2$f, %3$f): %4$f %4$d";
+		private static final String template = "%1$tF %1$tT (%2$f, %3$f): %4$f %5$d";
 
 		private Location mLocation;
 		
@@ -366,21 +362,35 @@ public class ViewLocationActivity extends ListActivity implements LocationListen
 			locationMgr.requestLocationUpdates(providerName, 0, MIN_DISTANCE, this);
 		}
 
-		List<LocationView> recentLocationList = mLocationList.subList(Math.min(0, mLocationList.size() - 3), mLocationList.size());
+		updateLocation(location);
+	}
+
+    private void updateLocation(Location location)
+    {
+        List<LocationView> recentLocationList = mLocationList.subList(Math.max(0, mLocationList.size() - MAX_RECENT_LOCATIONS_AGGREATION), mLocationList.size());
 		
-		boolean matched = false;
+		LocationView found = null;
 		for (LocationView locationView : recentLocationList) {
             GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
             
             if(locationView.match(geoPoint)) {
-                matched = true;
+                found = locationView;
                 break;
             }
         }
 		
-		mLocationList.add(new LocationView(location));
+		if(found==null)
+		{
+		    found = new LocationView(location);
+		    mLocationList.add(found);
+		}
+		else
+		{
+		    found.addLocation(location);
+		}
+		
 		mAdapter.notifyDataSetChanged();
-	}
+    }
 
 	public void onProviderDisabled(String provider)
 	{

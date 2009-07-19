@@ -1,5 +1,7 @@
 package android.view;
 
+import java.util.List;
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -8,6 +10,7 @@ import com.google.android.maps.GeoPoint;
 
 public class LocationUtils
 {
+    
     public static GeoPoint getGeoPoint(Location location)
     {
         Double geoLat = location.getLatitude() * 1E6;
@@ -28,5 +31,23 @@ public class LocationUtils
         String provider = locationManager.getBestProvider(criteria, true);
      
         return provider;
+    }
+    
+    public static double getDistance(GeoPoint p1, GeoPoint p2)
+    {
+        float[] results = new float[2];
+        
+        Location.distanceBetween(p1.getLatitudeE6() / 1.0E6, p1.getLongitudeE6() / 1.0E6, p2.getLatitudeE6() / 1.0E6, p2.getLongitudeE6() / 1.0E6, results);
+        
+        return results[0];
+    }
+    
+    public static GeoPoint getEMAPoint(List<ProximityPoint> points)
+    {
+        
+        
+        
+        
+        return null;
     }
 }

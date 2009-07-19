@@ -35,8 +35,8 @@ public class LocationDAO
         
         ContentValues values = new ContentValues();
         
-        values.put("latitudeE6", location.getLatitudeE6());
-        values.put("longitudeE6", location.getLongitudeE6());
+        values.put("latitudeE6", location.getProximitPoint().getLatitudeE6());
+        values.put("longitudeE6", location.getProximitPoint().getLongitudeE6());
         
         values.put("address1", location.getAddress1());
         values.put("address2", location.getAddress2());
