@@ -11,9 +11,12 @@
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	<Button android:text="sample locations" android:id="@+id/sample_locations"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-  <Button android:text="test map overlay" android:id="@+id/test_map_overlay"
+  <Button android:text="test static map overlay" android:id="@+id/test_map_overlay"
     android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+  <ImageButton android:text="test movement map overlay" android:id="@+id/test_movement_map_overlay"
+    android:layout_width="wrap_content" android:layout_height="wrap_content">
+      
+  </ImageButton>
   <Button android:text="sample proximity" android:id="@+id/sample_proximity"
     android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-<ImageButton android:id="@+id/ImageButton01" android:layout_width="wrap_content" android:layout_height="wrap_content"></ImageButton>
 </LinearLayout>
