@@ -15,8 +15,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-    
-		
+
 		<activity android:launchMode="singleTop" android:label="@string/view_name"
 			android:name="ViewActivity" />
 
@@ -97,3 +96,4 @@
   <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
 
 </manifest> 
+
