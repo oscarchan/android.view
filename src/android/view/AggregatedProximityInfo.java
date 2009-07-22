@@ -17,7 +17,16 @@ public class AggregatedProximityInfo
     private long mStartTime;
     private long mLastRecordedTime;
     
+    public AggregatedProximityInfo()
+    {
+        //
+    }
     public AggregatedProximityInfo(ProximityInfo proximityInfo)
+    {
+        init(proximityInfo);
+    }
+    
+    private void init(ProximityInfo proximityInfo)
     {
         mAggregatedPoint = proximityInfo.getProximityPoint();
         
@@ -29,7 +38,13 @@ public class AggregatedProximityInfo
     {
         if(proximityInfo.getRecordedTime()<=mLastRecordedTime) 
             return;
+
+        if(mAggregatedPoint==null)  {
+            init(proximityInfo);
+            return;
+        }
         
+
         long recordTime = proximityInfo.getRecordedTime();
         ProximityPoint point = proximityInfo.getProximityPoint();
 

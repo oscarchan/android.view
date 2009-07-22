@@ -19,13 +19,14 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 public class ViewMapActivity extends MapActivity
 {
     private List<Overlay> mOverlays;
     private Drawable mDrawable;
     private MapController mMapController;
+    
+    private ArrayList<Location> mLocations;
     
     @Override
     protected void onCreate(Bundle icicle)
@@ -43,7 +44,7 @@ public class ViewMapActivity extends MapActivity
         mapView.displayZoomControls(true);
         
         MapController mapController = mapView.getController();
-        mapController.setZoom(17);
+        mapController.setZoom(10);
         
         // my current location
         Location currentLocation = getCurrentLocation();
@@ -71,11 +72,14 @@ public class ViewMapActivity extends MapActivity
         if(intent!=null)
         {
             ArrayList<Location> locations = intent.getParcelableArrayListExtra(ViewActivityConstants.INTENT_LOCATIONS);
+            mLocations = locations;
     
             if (locations != null) {
 
                 Toast.makeText(this, "ViewMapActivity: received " + locations.size() +" locations", Toast.LENGTH_SHORT).show();
                 int index = 0;
+                AggregatedProximityInfo proximityInfo;
+                
                 for (Location location : locations) {
                     GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
 
