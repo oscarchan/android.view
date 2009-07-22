@@ -27,10 +27,8 @@ public class AggregatedProximityInfo
     
     public void addProximityInfo(ProximityInfo proximityInfo)
     {
-        if(proximityInfo.getRecordedTime()<=mLastRecordedTime) {
-            
+        if(proximityInfo.getRecordedTime()<=mLastRecordedTime) 
             return;
-        }
         
         long recordTime = proximityInfo.getRecordedTime();
         ProximityPoint point = proximityInfo.getProximityPoint();
@@ -40,12 +38,16 @@ public class AggregatedProximityInfo
 
         float accuracy = getMidPoint(mAggregatedPoint.getAccuracy(), point.getAccuracy(), aggregatedWeight, weight);
         
-        float aggrWeightPerc = (float) aggrWeightPerc / (aggregatedWeight + weight) * 
-        int latitudeE6 = (int) getMidPoint(mAggregatedPoint.getLatitudeE6(), point.getLatitudeE6(), aggregatedWeight, weight);
-        int longitudeE6 = (int) getMidPoint(mAggregatedPoint.getLongitudeE6(), point.getLongitudeE6(), aggregatedWeight, weight);
-
-        mAggregatedPoint = new ProximityPoint(new GeoPoint(latitudeE6, longitudeE6, accuracy));
+        int latitudeE6 = (int)
+            (getMidPoint(mAggregatedPoint.getLatitudeE6(), point.getLatitudeE6(), aggregatedWeight, weight)
+            + getMidPoint(mAggregatedPoint.getLatitudeE6(), point.getLatitudeE6(), mAggregatedPoint.getAccuracy(), point.getAccuracy()) / 2);
         
+        int longitudeE6 = (int) 
+            (getMidPoint(mAggregatedPoint.getLongitudeE6(), point.getLongitudeE6(), aggregatedWeight, weight)
+                + getMidPoint(mAggregatedPoint.getLongitudeE6(), point.getLongitudeE6(), mAggregatedPoint.getAccuracy(), point.getAccuracy()) / 2);
+            
+        mAggregatedPoint = new ProximityPoint(new GeoPoint(latitudeE6, longitudeE6), accuracy);
+        mLastRecordedTime = recordTime;
     }
     
     private static float getMidPoint(float p1, float p2, float w1, float w2)
