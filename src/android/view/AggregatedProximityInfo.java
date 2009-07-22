@@ -50,6 +50,11 @@ public class AggregatedProximityInfo
         mLastRecordedTime = recordTime;
     }
     
+    public ProximityPoint getAggregatedPoint()
+    {
+        return mAggregatedPoint;
+    }
+    
     private static float getMidPoint(float p1, float p2, float w1, float w2)
     {
         return (p1 * w1 + p2 * w2) / (w1 + w2); 
