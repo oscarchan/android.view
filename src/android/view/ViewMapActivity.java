@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ZoomControls;
@@ -66,35 +68,76 @@ public class ViewMapActivity extends MapActivity
         
         mMapController = mapController;
         
+        // custom control 
+        ImageButton backButton = (ImageButton) findViewById(R.id.map_back_button);
+        backButton.setOnClickListener(new OnClickListener()
+        {
+
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        
+        ImageButton resetButton = (ImageButton) findViewById(R.id.map_reset_button);
+        resetButton.setOnClickListener(new OnClickListener()
+        {
+
+            public void onClick(View v)
+            {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        
+        
         // 
         Intent intent = getIntent();
         
         if(intent!=null)
         {
             ArrayList<Location> locations = intent.getParcelableArrayListExtra(ViewActivityConstants.INTENT_LOCATIONS);
+            Toast.makeText(this, "ViewMapActivity: received " + locations.size() +" locations", Toast.LENGTH_SHORT).show();
+            
             mLocations = locations;
-    
-            if (locations != null) {
-
-                Toast.makeText(this, "ViewMapActivity: received " + locations.size() +" locations", Toast.LENGTH_SHORT).show();
-                int index = 0;
-                AggregatedProximityInfo proximityInfo;
-                
-                for (Location location : locations) {
-                    GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
-
-                    ProximityPoint proximityPoint = new ProximityPoint(geoPoint, location.getAccuracy());
-                    
-//                    OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-                    ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
-
-//                    itemizedOverlay.addOverlay(overlayItem);
-                    mOverlays.add(overlay);
-                }
-            }
         }
     }
 
+    private void populateLocation(int numLocation)
+    {
+        ArrayList<Location> locations = mLocations;
+        
+        if (locations == null)
+            return;
+        
+        if(numLocation==mOverlays.size())
+            return;
+        
+        
+
+        if(numLocation > mOverlays.size()) {
+            AggregatedProximityInfo proximityInfo;
+            
+            for (Location location : locations) {
+                GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
+
+                ProximityPoint proximityPoint = new ProximityPoint(geoPoint, location.getAccuracy());
+                
+//                OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
+                ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
+
+//                itemizedOverlay.addOverlay(overlayItem);
+                mOverlays.add(overlay);
+            }
+        
+            
+        } else {
+            // need to recalculate the average
+            while(mOverlays.size()>numLocation)
+                mOverlays.remove(mOverlays.size() - 1);
+        }
+    }
     
     private Location getCurrentLocation()
     {
