@@ -5,6 +5,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+<<<<<<< HEAD:src/android/view/ViewMapActivity.java
+=======
+import android.graphics.Paint;
+>>>>>>> 2aba818878ac1bb2b2056bacf9d6c93c21028402:src/android/view/ViewMapActivity.java
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -31,6 +35,12 @@ public class ViewMapActivity extends MapActivity
     private ArrayList<Location> mLocations;
     
     private int mNumReplayLocation;
+    
+    private Paint mPointPaint = new Paint();
+    private Paint mProximityPaint = new Paint();
+    private Paint mAggrPointPaint = new Paint();
+    private Paint mAggrProximityPaint = new Paint();
+    
     @Override
     protected void onCreate(Bundle icicle)
     {
@@ -48,7 +58,11 @@ public class ViewMapActivity extends MapActivity
         
         MapController mapController = mapView.getController();
         mapController.setZoom(10);
+<<<<<<< HEAD:src/android/view/ViewMapActivity.java
         
+=======
+
+>>>>>>> 2aba818878ac1bb2b2056bacf9d6c93c21028402:src/android/view/ViewMapActivity.java
         // my current location
         Location currentLocation = getCurrentLocation();
         GeoPoint currentGeoPoint = LocationUtils.getGeoPoint(currentLocation);
@@ -69,6 +83,13 @@ public class ViewMapActivity extends MapActivity
         
         mMapController = mapController;
         
+<<<<<<< HEAD:src/android/view/ViewMapActivity.java
+=======
+        // color
+        mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
+        mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
+        
+>>>>>>> 2aba818878ac1bb2b2056bacf9d6c93c21028402:src/android/view/ViewMapActivity.java
         // custom control 
         ImageButton backButton = (ImageButton) findViewById(R.id.map_back_button);
         backButton.setOnClickListener(new OnClickListener()
@@ -138,6 +159,7 @@ public class ViewMapActivity extends MapActivity
             
             aggregatedInfo.addProximityInfo(proximityInfo);
             
+<<<<<<< HEAD:src/android/view/ViewMapActivity.java
 //            ProximityOverlay overlay = new ProximityOverlay(proximityPoint);
         }
 
@@ -159,6 +181,20 @@ public class ViewMapActivity extends MapActivity
             while(mOverlays.size()>numLocation)
                 mOverlays.remove(mOverlays.size() - 1);
         }
+=======
+            ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mPointPaint, mProximityPaint);
+            
+            mOverlays.add(overlay);
+            
+        }
+        
+        ProximityPoint aggregatedPoint = aggregatedInfo.getAggregatedPoint();
+        
+        if(aggregatedPoint!=null)
+            mOverlays.add(new ProximityOverlay(aggregatedPoint, mAggrPointPaint, mAggrProximityPaint));
+        
+        
+>>>>>>> 2aba818878ac1bb2b2056bacf9d6c93c21028402:src/android/view/ViewMapActivity.java
     }
     
     private Location getCurrentLocation()

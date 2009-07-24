@@ -28,4 +28,9 @@
 <string name="pm_add_proximity_title">add proximity</string>
 <string name="pm_search_nearby_title">Search nearby</string>
 <string name="pm_clean_all_proximities_title">Clear all proximities</string>
+<color name="proximity_color">#10800000</color>
+<color name="point_color">#1000ffff</color>
+<color name="aggregated_point_color">#10ff0000</color>
+<color name="aggregated_proxmity_color">#10ff0000</color>
+
 </resources>
