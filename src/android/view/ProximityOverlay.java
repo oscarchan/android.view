@@ -1,7 +1,6 @@
 package android.view;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Paint.Style;
@@ -15,11 +14,11 @@ public class ProximityOverlay extends Overlay
 {
     private ProximityPoint mProximityPoint;
     
-    private Color mProximityColor;
-    private Color mPointColor;
+    private Paint mProximityColor;
+    private Paint mPointColor;
     private Drawable mMarker;
     
-    public ProximityOverlay(ProximityPoint point, Color pointColor, Color proximityColor)
+    public ProximityOverlay(ProximityPoint point, Paint pointColor, Paint proximityColor)
     {
         mProximityPoint = point;
         mPointColor = pointColor;

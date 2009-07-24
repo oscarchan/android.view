@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -31,6 +32,12 @@ public class ViewMapActivity extends MapActivity
     private ArrayList<Location> mLocations;
     
     private int mNumReplayLocation;
+    
+    private Paint mPointPaint = new Paint();
+    private Paint mProximityPaint = new Paint();
+    private Paint mAggrPointPaint = new Paint();
+    private Paint mAggrProximityPaint = new Paint();
+    
     @Override
     protected void onCreate(Bundle icicle)
     {
@@ -48,7 +55,7 @@ public class ViewMapActivity extends MapActivity
         
         MapController mapController = mapView.getController();
         mapController.setZoom(10);
-        
+
         // my current location
         Location currentLocation = getCurrentLocation();
         GeoPoint currentGeoPoint = LocationUtils.getGeoPoint(currentLocation);
@@ -68,6 +75,10 @@ public class ViewMapActivity extends MapActivity
         mDrawable = this.getResources().getDrawable(R.drawable.point_b);
         
         mMapController = mapController;
+        
+        // color
+        mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
+        mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
         
         // custom control 
         ImageButton backButton = (ImageButton) findViewById(R.id.map_back_button);
@@ -138,27 +149,18 @@ public class ViewMapActivity extends MapActivity
             
             aggregatedInfo.addProximityInfo(proximityInfo);
             
-//            ProximityOverlay overlay = new ProximityOverlay(proximityPoint);
-        }
-
-        if(numLocation > mOverlays.size()) {
+            ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mPointPaint, mProximityPaint);
             
-            for (Location location : locations) {
-
-                
-//                OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-//                ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
-
-//                itemizedOverlay.addOverlay(overlayItem);
-//                mOverlays.add(overlay);
-            }
+            mOverlays.add(overlay);
+            
+        }
         
-            
-        } else {
-            // need to recalculate the average
-            while(mOverlays.size()>numLocation)
-                mOverlays.remove(mOverlays.size() - 1);
-        }
+        ProximityPoint aggregatedPoint = aggregatedInfo.getAggregatedPoint();
+        
+        if(aggregatedPoint!=null)
+            mOverlays.add(new ProximityOverlay(aggregatedPoint, mAggrPointPaint, mAggrProximityPaint));
+        
+        
     }
     
     private Location getCurrentLocation()

@@ -5,6 +5,21 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
+    <LinearLayout android:id="@+id/zoom_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/mapview"
+        android:layout_centerHorizontal="true" >
+        <ImageButton android:src="@drawable/close16" android:id="@+id/map_reset_button"
+          android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <EditText android:id="@+id/go_to_point" android:layout_width="wrap_content" />
+        
+        <ImageButton android:src="@drawable/back16" android:id="@+id/map_back_button"
+          android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <ImageButton android:src="@drawable/forward16" android:id="@+id/map_forward_button"
+          android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+    
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
@@ -12,19 +27,7 @@
         android:clickable="true"
         android:apiKey="0F_4_4yqdAlSw8qjLhoAwCLnuWbBM0iZl-FGdGA"
     />
-    <LinearLayout android:id="@+id/zoom_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/mapview"
-        android:layout_centerHorizontal="true" >
-        <ImageButton android:src="@drawable/back16" android:id="@+id/map_back_button"
-          android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <ImageButton android:src="@drawable/close16" android:id="@+id/map_reset_button"
-          android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <ImageButton android:src="@drawable/forward16" android:id="@+id/map_forward_button"
-          android:layout_width="wrap_content" android:layout_height="wrap_content" />
-          
-    </LinearLayout>
+
        
 
 </RelativeLayout>
