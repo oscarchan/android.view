@@ -30,6 +30,7 @@ public class ViewMapActivity extends MapActivity
     
     private ArrayList<Location> mLocations;
     
+    private int mNumReplayLocation;
     @Override
     protected void onCreate(Bundle icicle)
     {
@@ -72,25 +73,32 @@ public class ViewMapActivity extends MapActivity
         ImageButton backButton = (ImageButton) findViewById(R.id.map_back_button);
         backButton.setOnClickListener(new OnClickListener()
         {
-
             public void onClick(View v)
             {
-                // TODO Auto-generated method stub
-
+                if(mNumReplayLocation>0)
+                    populateLocation(--mNumReplayLocation);
             }
         });
         
         ImageButton resetButton = (ImageButton) findViewById(R.id.map_reset_button);
         resetButton.setOnClickListener(new OnClickListener()
         {
-
             public void onClick(View v)
             {
-                // TODO Auto-generated method stub
-
+                mNumReplayLocation = 0;
+                populateLocation(mNumReplayLocation);
             }
         });
         
+        ImageButton forwardButton = (ImageButton) findViewById(R.id.map_forward_button);
+        forwardButton.setOnClickListener(new OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                if(mNumReplayLocation>mLocations.size() - 1)
+                    populateLocation(++mNumReplayLocation);
+            }
+        });
         
         // 
         Intent intent = getIntent();
@@ -115,20 +123,34 @@ public class ViewMapActivity extends MapActivity
             return;
         
         
+        mOverlays.clear();
+
+        
+        AggregatedProximityInfo aggregatedInfo = new AggregatedProximityInfo();
+        
+        for(int i=0;i<numLocation;i++) {
+            Location location = locations.get(i);
+            
+            GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
+
+            ProximityPoint proximityPoint = new ProximityPoint(geoPoint, location.getAccuracy());
+            ProximityInfo proximityInfo = new ProximityInfo(proximityPoint, location.getTime());
+            
+            aggregatedInfo.addProximityInfo(proximityInfo);
+            
+//            ProximityOverlay overlay = new ProximityOverlay(proximityPoint);
+        }
 
         if(numLocation > mOverlays.size()) {
-            AggregatedProximityInfo proximityInfo;
             
             for (Location location : locations) {
-                GeoPoint geoPoint = LocationUtils.getGeoPoint(location);
 
-                ProximityPoint proximityPoint = new ProximityPoint(geoPoint, location.getAccuracy());
                 
 //                OverlayItem overlayItem = new OverlayItem(geoPoint, "" + index++, "");
-                ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
+//                ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mDrawable);
 
 //                itemizedOverlay.addOverlay(overlayItem);
-                mOverlays.add(overlay);
+//                mOverlays.add(overlay);
             }
         
             
