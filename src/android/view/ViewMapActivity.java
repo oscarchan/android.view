@@ -172,7 +172,6 @@ public class ViewMapActivity extends MapActivity
             
             aggregatedInfo.addProximityInfo(proximityInfo);
             
-
             ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mPointPaint, mProximityPaint);
             
             mOverlays.add(overlay);
@@ -183,7 +182,6 @@ public class ViewMapActivity extends MapActivity
         
         if(aggregatedPoint!=null)
             mOverlays.add(new ProximityOverlay(aggregatedPoint, mAggrPointPaint, mAggrProximityPaint));
-        
     }
     
     private Location getCurrentLocation()
