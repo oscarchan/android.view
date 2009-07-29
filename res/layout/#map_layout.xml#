@@ -2,10 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/map_layout"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
+ nx    android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout
+<<<<<<< HEAD:res/layout/map_layout.xml
+
         android:id="@+id/map_nav_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -38,12 +39,14 @@
           android:layout_width="wrap_content" android:layout_height="wrap_content" 
           android:layout_weight="1"
           />
+>>>>>>> 4d58272f5b48cd9f9a1de2db079d55287239deaf:res/layout/map_layout.xml
     </LinearLayout>
 
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_alignBottom="@id/zoom_view"
         android:clickable="true"
         android:apiKey="0F_4_4yqdAlSw8qjLhoAwCLnuWbBM0iZl-FGdGA"
         android:layout_below="@id/map_nav_view"
@@ -55,5 +58,13 @@
         android:layout_alignBottom="@id/mapview"
         android:layout_centerHorizontal="true" >
     </LinearLayout>
+
+    <LinearLayout android:id="@+id/zoom_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/mapview"
+        android:layout_centerHorizontal="true" >
+    </LinearLayout>
+       
 
 </RelativeLayout>

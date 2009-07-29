@@ -11,8 +11,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -76,6 +79,7 @@ public class ViewMapActivity extends MapActivity
         
         mMapController = mapController;
         
+        // color
         mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
         mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
         
@@ -101,6 +105,7 @@ public class ViewMapActivity extends MapActivity
         });
         
         ImageButton forwardButton = (ImageButton) findViewById(R.id.map_forward_button);
+
         forwardButton.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -110,6 +115,22 @@ public class ViewMapActivity extends MapActivity
             }
         });
         
+        TextView totalPointView = (TextView) findViewById(R.id.total_points);
+        EditText editText = (EditText) findViewById(R.id.current_point);
+        editText.setText("0");
+        editText.setOnKeyListener(new OnKeyListener()
+        {
+
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if(KeyEvent.ACTION_DOWN==event.getAction())
+                {
+                    
+                }
+                return false;
+            }
+        } );
+
         // 
         Intent intent = getIntent();
         
@@ -117,6 +138,9 @@ public class ViewMapActivity extends MapActivity
         {
             ArrayList<Location> locations = intent.getParcelableArrayListExtra(ViewActivityConstants.INTENT_LOCATIONS);
             Toast.makeText(this, "ViewMapActivity: received " + locations.size() +" locations", Toast.LENGTH_SHORT).show();
+            
+            totalPointView.setText("/" + locations.size());
+            
             
             mLocations = locations;
         }
@@ -158,7 +182,6 @@ public class ViewMapActivity extends MapActivity
         
         if(aggregatedPoint!=null)
             mOverlays.add(new ProximityOverlay(aggregatedPoint, mAggrPointPaint, mAggrProximityPaint));
-
     }
     
     private Location getCurrentLocation()
