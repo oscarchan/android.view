@@ -10,10 +10,13 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,8 @@ public class ViewMapActivity extends MapActivity
     private List<Overlay> mOverlays;
     private Drawable mDrawable;
     private MapController mMapController;
+    private Handler mHandler;
+    private Runnable mNavViewDisolver;
     
     private ArrayList<Location> mLocations;
     
@@ -40,6 +45,8 @@ public class ViewMapActivity extends MapActivity
     private Paint mProximityPaint = new Paint();
     private Paint mAggrPointPaint = new Paint();
     private Paint mAggrProximityPaint = new Paint();
+    private GestureDetector mGestureDetector;
+
     
     @Override
     protected void onCreate(Bundle icicle)
@@ -50,6 +57,8 @@ public class ViewMapActivity extends MapActivity
         
         // storing references
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.zoom_view);
+        final View mapNavView = findViewById(R.id.map_nav_view);
+        mapNavView.setVisibility(View.INVISIBLE);
         
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setSatellite(false);
@@ -71,7 +80,6 @@ public class ViewMapActivity extends MapActivity
         
         ZoomControls zoomControls = (ZoomControls) mapView.getZoomControls();
         
-        
         linearLayout.addView(zoomControls);
         
         mOverlays = mapView.getOverlays();
@@ -79,12 +87,86 @@ public class ViewMapActivity extends MapActivity
         
         mMapController = mapController;
         
+        mHandler = new Handler();
+        mNavViewDisolver = new Runnable() 
+        {
+            public void run()
+            {
+                hide(mapNavView);
+            }
+        };
         // color
         mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
         mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
         
         // custom control 
-        ImageButton backButton = (ImageButton) findViewById(R.id.map_back_button);
+        mGestureDetector = new GestureDetector(this, new SimpleOnGestureListener(){
+
+            public boolean onDown(MotionEvent e)
+            {
+                show(mapNavView);
+                return false;
+            }
+
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+            {
+                show(mapNavView);
+                return false;
+            }
+
+            public boolean onSingleTapUp(MotionEvent e)
+            {
+                show(mapNavView);
+                return false;
+            }}, mHandler);
+
+        mGestureDetector.setIsLongpressEnabled(true);
+        
+//        mapView.setOnTouchListener(new OnTouchListener()
+//        {
+//            public boolean onTouch(View v, MotionEvent event)
+//            {
+//                switch(event.getAction())
+//                {
+//                    case MotionEvent.ACTION_DOWN:
+//                    case MotionEvent.ACTION_MOVE:
+//                    {
+//                        show(mapNavView);
+//                        break;
+//                    }
+//                    case MotionEvent.ACTION_CANCEL:
+//                    case MotionEvent.ACTION_UP:
+//                    {
+//                        Thread thread = new Thread(new Runnable() {
+//                            public void run()
+//                            {
+//                                try {
+//                                    Thread.sleep(3000);
+//                                    hide(mapNavView);
+//                                } catch (InterruptedException e) {
+//                                    // ignore
+//                                } 
+//                            }});
+//                        thread.start();
+//                        break;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+        
+//        mapView.setOnFocusChangeListener(new OnFocusChangeListener()
+//        {
+//            public void onFocusChange(View v, boolean hasFocus)
+//            {
+//                if (hasFocus)
+//                    show(mapNavView);
+//                else
+//                    hide(mapNavView);
+//            }
+//        });
+
+        View backButton = findViewById(R.id.map_back_button);
         backButton.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -94,7 +176,7 @@ public class ViewMapActivity extends MapActivity
             }
         });
         
-        ImageButton resetButton = (ImageButton) findViewById(R.id.map_reset_button);
+        View resetButton = findViewById(R.id.map_reset_button);
         resetButton.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -104,7 +186,7 @@ public class ViewMapActivity extends MapActivity
             }
         });
         
-        ImageButton forwardButton = (ImageButton) findViewById(R.id.map_forward_button);
+        View forwardButton = findViewById(R.id.map_forward_button);
 
         forwardButton.setOnClickListener(new OnClickListener()
         {
@@ -146,6 +228,25 @@ public class ViewMapActivity extends MapActivity
         }
     }
 
+    public void show(View view) {
+        fade(view, View.VISIBLE, 0.0f, 1.0f, 0);
+        
+        mHandler.removeCallbacks(mNavViewDisolver);
+        mHandler.postDelayed(mNavViewDisolver, ViewConfiguration.getZoomControlsTimeout());
+    }
+    
+    public static void hide(View view) {
+        fade(view, View.GONE, 1.0f, 0.0f, 5000);
+    }
+    
+    private static void fade(View view, int visibility, float startAlpha, float endAlpha, int startDelay) {
+        AlphaAnimation anim = new AlphaAnimation(startAlpha, endAlpha);
+        anim.setStartTime(AnimationUtils.currentAnimationTimeMillis() + startDelay);
+        anim.setDuration(500);
+        view.startAnimation(anim);
+        view.setVisibility(visibility);
+    }
+    
     private void populateLocation(int numLocation)
     {
         ArrayList<Location> locations = mLocations;
