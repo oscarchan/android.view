@@ -100,8 +100,8 @@ public class ViewMapActivity extends MapActivity
         mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
         
         // custom control 
-        mGestureDetector = new GestureDetector(this, new SimpleOnGestureListener(){
-
+        mGestureDetector = new GestureDetector(this, new SimpleOnGestureListener()
+        {
             public boolean onDown(MotionEvent e)
             {
                 show(mapNavView);
