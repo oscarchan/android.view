@@ -11,9 +11,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
@@ -99,8 +101,15 @@ public class ViewMapActivity extends MapActivity
         mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
         mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
         
-        // custom control 
-        mGestureDetector = new GestureDetector(this, new SimpleOnGestureListener()
+        mapView.setOnTouchListener(new OnTouchListener()
+        {
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
+        // custom control
+        OnGestureListener gestureListener = ProxyUtil.getToastProxy(ViewMapActivity.this, OnGestureListener.class, new SimpleOnGestureListener()
         {
             public boolean onDown(MotionEvent e)
             {
@@ -118,7 +127,12 @@ public class ViewMapActivity extends MapActivity
             {
                 show(mapNavView);
                 return false;
-            }}, mHandler);
+            }
+        });
+        
+        
+        mGestureDetector = new GestureDetector(mapView.getContext(), 
+            gestureListener, mHandler);
 
         mGestureDetector.setIsLongpressEnabled(true);
         

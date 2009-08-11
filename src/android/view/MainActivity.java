@@ -177,8 +177,7 @@ public class MainActivity extends Activity
 	
 	private <T> T getToastProxy(Class<T> clazz, T object)
 	{
-	    T proxy = (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new ToastInvocationHandler(object));
-	    return proxy;
+	    return ProxyUtil.getToastProxy(MainActivity.this, clazz, object);
 	}
 	
 	private long getTime(String dateString)
@@ -203,31 +202,7 @@ public class MainActivity extends Activity
         return location;
     }
 	
-    final class ToastInvocationHandler implements InvocationHandler
-    {
-        private Object mWrappedObj;
-        
-        public ToastInvocationHandler()
-        {
-            this(null);
-        }
-        
-        public ToastInvocationHandler(Object wrappedObj)
-        {
-            mWrappedObj = wrappedObj;
-        }
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-        {
-            Toast.makeText(MainActivity.this, method.getName() + "(" + Arrays.asList(args) + ")", Toast.LENGTH_SHORT).show();
-            
-            Object returned = null;
-            
-            if(mWrappedObj!=null)
-                returned = method.invoke(mWrappedObj, args);
-            
-            return returned;
-        }
-    }	
+    	
 	
 
 
