@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
@@ -68,11 +69,14 @@ public class ViewMapActivity extends MapActivity
         mapView.displayZoomControls(true);
         
         MapController mapController = mapView.getController();
-        mapController.setZoom(10);
+        mapController.setZoom(15);
 
         // my current location
         Location currentLocation = getCurrentLocation();
-        GeoPoint currentGeoPoint = LocationUtils.getGeoPoint(currentLocation);
+        GeoPoint currentGeoPoint = new GeoPoint((int)(37.425376 * 1E6), (int)(-121.914608 * 1E6));
+        if(currentLocation!=null) {
+            currentGeoPoint = LocationUtils.getGeoPoint(currentLocation);
+        }
         mapController.animateTo(currentGeoPoint);
         
         List<Overlay> overlays = mapView.getOverlays();
@@ -90,13 +94,7 @@ public class ViewMapActivity extends MapActivity
         mMapController = mapController;
         
         mHandler = new Handler();
-        mNavViewDisolver = new Runnable() 
-        {
-            public void run()
-            {
-                hide(mapNavView);
-            }
-        };
+
         // color
         mPointPaint.setColor(this.getResources().getColor(R.color.point_color));
         mProximityPaint.setColor(this.getResources().getColor(R.color.proximity_color));
@@ -136,50 +134,8 @@ public class ViewMapActivity extends MapActivity
 
         mGestureDetector.setIsLongpressEnabled(true);
         
-//        mapView.setOnTouchListener(new OnTouchListener()
-//        {
-//            public boolean onTouch(View v, MotionEvent event)
-//            {
-//                switch(event.getAction())
-//                {
-//                    case MotionEvent.ACTION_DOWN:
-//                    case MotionEvent.ACTION_MOVE:
-//                    {
-//                        show(mapNavView);
-//                        break;
-//                    }
-//                    case MotionEvent.ACTION_CANCEL:
-//                    case MotionEvent.ACTION_UP:
-//                    {
-//                        Thread thread = new Thread(new Runnable() {
-//                            public void run()
-//                            {
-//                                try {
-//                                    Thread.sleep(3000);
-//                                    hide(mapNavView);
-//                                } catch (InterruptedException e) {
-//                                    // ignore
-//                                } 
-//                            }});
-//                        thread.start();
-//                        break;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
+        final TextView currentPointView = (TextView) findViewById(R.id.current_point);
         
-//        mapView.setOnFocusChangeListener(new OnFocusChangeListener()
-//        {
-//            public void onFocusChange(View v, boolean hasFocus)
-//            {
-//                if (hasFocus)
-//                    show(mapNavView);
-//                else
-//                    hide(mapNavView);
-//            }
-//        });
-
         View backButton = findViewById(R.id.map_back_button);
         backButton.setOnClickListener(new OnClickListener()
         {
@@ -187,6 +143,8 @@ public class ViewMapActivity extends MapActivity
             {
                 if(mNumReplayLocation>0)
                     populateLocation(--mNumReplayLocation);
+              
+                currentPointView.setText(String.valueOf(mNumReplayLocation));
             }
         });
         
@@ -197,6 +155,8 @@ public class ViewMapActivity extends MapActivity
             {
                 mNumReplayLocation = 0;
                 populateLocation(mNumReplayLocation);
+                
+                currentPointView.setText(String.valueOf(mNumReplayLocation));
             }
         });
         
@@ -208,24 +168,46 @@ public class ViewMapActivity extends MapActivity
             {
                 if(mNumReplayLocation>mLocations.size() - 1)
                     populateLocation(++mNumReplayLocation);
+                
+                currentPointView.setText(String.valueOf(mNumReplayLocation));
             }
         });
         
         TextView totalPointView = (TextView) findViewById(R.id.total_points);
-        EditText editText = (EditText) findViewById(R.id.current_point);
+        final EditText editText = (EditText) findViewById(R.id.current_point);
         editText.setText("0");
         editText.setOnKeyListener(new OnKeyListener()
         {
-
             public boolean onKey(View v, int keyCode, KeyEvent event)
             {
-                if(KeyEvent.ACTION_DOWN==event.getAction())
-                {
-                    
+                if(KeyEvent.ACTION_DOWN==event.getAction()
+                    && KeyEvent.KEYCODE_ENTER==keyCode) {
+                    String positionString = editText.getText().toString();
+                    try {
+                        int position = Integer.parseInt(positionString);
+                        
+                        if(0<=position && position<mLocations.size())
+                            populateLocation(position);
+                        else
+                            Toast.makeText(ViewMapActivity.this, "invalid point position: " + positionString, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(ViewMapActivity.this, "invalid input for point position: " + positionString, Toast.LENGTH_SHORT).show();
+                    }
                 }
                 return false;
             }
         } );
+        
+        editText.setOnFocusChangeListener(new OnFocusChangeListener() 
+        {
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus==false) {
+                    mHandler.removeCallbacks(mNavViewDisolver);
+                    mHandler.postDelayed(mNavViewDisolver, ViewConfiguration.getZoomControlsTimeout());                    
+                }
+            }
+        });
 
         // 
         Intent intent = getIntent();
@@ -237,9 +219,19 @@ public class ViewMapActivity extends MapActivity
             
             totalPointView.setText("/" + locations.size());
             
-            
             mLocations = locations;
+            
+            populateLocation(mLocations.size());
         }
+        
+        mNavViewDisolver = new Runnable() 
+        {
+            public void run()
+            {
+                if(editText.isFocused()==false)
+                    hide(mapNavView);
+            }
+        };
     }
 
     public void show(View view) {
@@ -290,6 +282,8 @@ public class ViewMapActivity extends MapActivity
             ProximityOverlay overlay = new ProximityOverlay(proximityPoint, mPointPaint, mProximityPaint);
             
             mOverlays.add(overlay);
+            
+            
             
         }
         

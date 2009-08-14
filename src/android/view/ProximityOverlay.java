@@ -3,7 +3,6 @@ package android.view;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.MapView;
@@ -38,11 +37,9 @@ public class ProximityOverlay extends Overlay
         
         Point point = projection.toPixels(mProximityPoint.getGeoPoint(), null);
         float radius = projection.metersToEquatorPixels(mProximityPoint.getAccuracy());
-        Paint paint = new Paint();
         
-        paint.setStyle(Style.FILL);
-        paint.setARGB(16, 128, 0, 0);
-        canvas.drawCircle(point.x, point.y, radius, paint);
+        canvas.drawCircle(point.x, point.y, radius, mProximityColor);
+//        canvas.drawPoint(point.x, point.y, mPointColor);
         
 //        Bitmap pointIcon = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.point_b);
         
@@ -51,6 +48,7 @@ public class ProximityOverlay extends Overlay
         
 //        canvas.
 //        canvas.drawBitmap(pointIcon, matrix, paint)
-        
+
+        super.draw(canvas, mapView, shadow);
     }
 }

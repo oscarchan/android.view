@@ -23,7 +23,7 @@ public class ProxyUtil
         
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
         {
-            Toast.makeText(mActivity, method.getName() + "(" + Arrays.asList(args) + ")", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(mActivity, method.getName() + "(" + Arrays.asList(args) + ")", Toast.LENGTH_SHORT).show();
             
             Object returned = null;
             
